@@ -17,8 +17,8 @@ class VigenereCipher
   end
 
 
-  def input(message)
-    @message = message.downcase
+  def input_message(message)
+    @message = message
   end
 
   def use_password(phrase)
@@ -32,6 +32,11 @@ class VigenereCipher
     else
       raise 'No message to encrypt.'
     end
+  end
+
+  def encrypt_using(password)
+    use_password(password)
+
   end
 
   def encrypt
@@ -61,6 +66,9 @@ class VigenereCipher
   end
 
   def charnum(char)
+    if char =~ /[0-9]/
+      return char
+    end
     @lo_char_array.index(char.downcase)
   end
 

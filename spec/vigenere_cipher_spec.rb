@@ -7,13 +7,13 @@ describe 'VigenereCipher' do
   let(:password) {"FREEDOM"}
 
   it 'should take an input string and a passphrase' do
-    cipher.input(message)
+    cipher.input_message(message)
     cipher.use_password(password)
 
   end
 
   it 'passphrase should repeat for every non-" " character' do
-    cipher.input(message)
+    cipher.input_message(message)
     cipher.lengthen_password("FREEDOM")
     expect(cipher.phrase).to eq "FREEDO MF REED"
   end
@@ -30,7 +30,7 @@ describe 'VigenereCipher' do
     #         ==============
     result = 'fkxefy my ueaq'
 
-    cipher.input(message)
+    cipher.input_message(message)
     cipher.use_password(password)
     expect(cipher.encrypt).to eq result
 

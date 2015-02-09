@@ -39,37 +39,46 @@ class VigenereCipher
 
   end
 
+  # -- Shifts the character by appropriate amount
+
+  def shiftex(char,index)
+    if char.match /[a-z]/
+      char = @lo_char_array[(charnum(char)+charnum(@phrase[index]))%26]
+    else
+      if char.match /[A-Z]/
+        char = @hi_char_array[(charnum(char)+charnum(@phrase[index]))%26]
+      else
+        if char.match /[0-9]/
+          char = (char.to_i + charnum(@phrase[index]))%10
+        else
+        char
+        end
+      end
+    end
+  end
+
   def encrypt
     if ready?
       index = 0
       encrypted_message = ""
       @message.chars.map do |x|
 
-
-        if @lo_char_array.include? x
-          x = @lo_char_array[(charnum(x)+charnum(@phrase[index]))%26]
-        else
-          if @hi_char_array.include? x
-            x = @hi_char_array[(charnum(x)+charnum(@phrase[index]))%26]
-          #else
-          #  x
-          end
-        end
+        x = shiftex(x,index)
 
           encrypted_message << x
           index += 1
-
       end # map |x|
-
+      @message = nil
+      @phrase = nil
       encrypted_message
     end # if ready?
   end
 
   def charnum(char)
     if char =~ /[0-9]/
-      return char
+      return char.to_i
     end
-    @lo_char_array.index(char.downcase)
+      @lo_char_array.index(char.downcase)
   end
 
 
@@ -78,7 +87,7 @@ class VigenereCipher
     @phrase = ""
     i = 0
     @message.chars.each do |x|
-      if x == " "
+      if !alphanumeric?(x)
         @phrase << " "
       else
         @phrase << phrase.upcase[i]

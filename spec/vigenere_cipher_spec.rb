@@ -28,7 +28,7 @@ describe 'VigenereCipher' do
     #         FREEDO MF REED
     #         Attack at dawn
     #         ==============
-    result = 'fkxefy my ueaq'
+    result = 'Fkxefy my ueaq'
 
     cipher.input_message(message)
     cipher.use_password(password)

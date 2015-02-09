@@ -40,25 +40,21 @@ class VigenereCipher
       encrypted_message = ""
       @message.chars.map do |x|
 
+
         if @lo_char_array.include? x
-          x = @lo_char_array[charnum(x)+charnum(@phrase[index])%26]
+          x = @lo_char_array[(charnum(x)+charnum(@phrase[index]))%26]
         else
           if @hi_char_array.include? x
-            x = @hi_char_array[charnum(x)+charnum(@phrase[index])%26]
-          else
-            x
+            x = @hi_char_array[(charnum(x)+charnum(@phrase[index]))%26]
+          #else
+          #  x
           end
         end
-        if x
-          puts x
-          encrypted_message << x
-        else
-          puts x
-        end
 
-        index += 1
+          encrypted_message << x
+          index += 1
+
       end # map |x|
-      puts @message
 
       encrypted_message
     end # if ready?

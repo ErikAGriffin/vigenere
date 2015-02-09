@@ -1,6 +1,5 @@
 class VigenereCipher
 
-  attr_accessor :message, :phrase, :status
 
   def initialize
     @lo_char_array = [*'a'..'z']
@@ -9,7 +8,7 @@ class VigenereCipher
   end
 
   def input_message(text)
-    self.message = text
+    @message = text
   end
 
   def use_password(phrase)
@@ -20,8 +19,16 @@ class VigenereCipher
     !input.match /[^a-zA-Z0-9]/
   end
 
-  def encrypt_using(password)
+  def encrypt_message_with_password(message,password)
+    input_message(message)
     use_password(password)
+    self.encrypt
+  end
+
+  def decrypt_message_with_password(message,password)
+    input_message(message,password)
+    use_password(password)
+    self.decrypt
   end
 
   # -- Shifts the character by appropriate amount
@@ -40,25 +47,32 @@ class VigenereCipher
   end
 
   def new_index(char,index)
-    if status == :encrypting
+    if @status == :encrypting
       (charnum(char)+charnum(@phrase[index]))%26
     else
       (charnum(char)-charnum(@phrase[index]))%26
     end
   end
 
-  def encrypt
-    if !message
-      raise 'No message to encrypt'
+  def charnum(char)
+    if char =~ /[0-9]/
+      return char.to_i
     end
+      @lo_char_array.index(char.downcase)
+  end
+
+  def message?
+    raise 'No message to encrypt!' if !@message
+  end
+
+  def encrypt
+    self.message?
     @status = :encrypting
     self.crypt
   end # def decrypt
 
   def decrypt
-    if !message
-      raise 'No message to encrypt'
-    end
+    self.message?
     @status = :decrypting
     self.crypt
   end # def decrypt
@@ -67,7 +81,7 @@ class VigenereCipher
     lengthen_password(@phrase)
     index = 0
     result = ""
-    self.message.chars.map do |x|
+    @message.chars.map do |x|
       x = shiftex(x,index)
       result << x
       index += 1
@@ -77,17 +91,10 @@ class VigenereCipher
     result
   end # crypt
 
-  def charnum(char)
-    if char =~ /[0-9]/
-      return char.to_i
-    end
-      @lo_char_array.index(char.downcase)
-  end
-
   def lengthen_password(phrase)
     @phrase = ""
     i = 0
-    self.message.chars.each do |x|
+    @message.chars.each do |x|
       if !alphanumeric?(x)
         @phrase << " "
       else

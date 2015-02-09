@@ -9,7 +9,7 @@ describe 'VigenereCipher' do
   it 'should take an input string and a passphrase' do
     cipher.input_message(message)
     cipher.use_password(password)
-
+    expect(cipher.message).to eq message
   end
 
   it 'passphrase should repeat for every non-" " character' do

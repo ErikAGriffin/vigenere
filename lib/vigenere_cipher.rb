@@ -8,16 +8,16 @@ class VigenereCipher
     @status = :encrypting
   end
 
-  def alphanumeric?(input)
-    !input.match /[^a-zA-Z0-9]/
-  end
-
   def input_message(text)
     self.message = text
   end
 
   def use_password(phrase)
     alphanumeric?(phrase) ? @phrase = phrase : raise('ERROR: Non-alphanumeric pass')
+  end
+
+  def alphanumeric?(input)
+    !input.match /[^a-zA-Z0-9]/
   end
 
   def encrypt_using(password)
@@ -33,7 +33,7 @@ class VigenereCipher
       when /[A-Z]/
         char = @hi_char_array[new_index(char,index)]
       when /[0-9]/
-        char = (char.to_i+charnum(@phrase[index]))%10
+        char = ((char.to_i+charnum(@phrase[index]))%10).to_s
       else
         char
     end # case
@@ -47,43 +47,35 @@ class VigenereCipher
     end
   end
 
+  def encrypt
+    if !message
+      raise 'No message to encrypt'
+    end
+    @status = :encrypting
+    self.crypt
+  end # def decrypt
+
   def decrypt
     if !message
       raise 'No message to encrypt'
     end
     @status = :decrypting
-    lengthen_password(@phrase)
-
-    index = 0
-    decrypted_message = ""
-    self.message.chars.map do |x|
-      x = shiftex(x,index)
-      decrypted_message << x
-      index += 1
-    end # self.map do |x|
-    @message = nil
-    @phrase = nil
-    decrypted_message
+    self.crypt
   end # def decrypt
 
-  def encrypt
-    if !message
-      raise 'No message to encrypt'
-    end
-
-    @status = :encrypting
+  def crypt
     lengthen_password(@phrase)
     index = 0
-    encrypted_message = ""
+    result = ""
     self.message.chars.map do |x|
       x = shiftex(x,index)
-      encrypted_message << x
+      result << x
       index += 1
-    end # map do |x|
+    end # self.map do
     @message = nil
     @phrase = nil
-    encrypted_message
-  end # def decrypt
+    result
+  end # crypt
 
   def charnum(char)
     if char =~ /[0-9]/
